@@ -1,0 +1,11 @@
+onSuccess: async (data, variables, context) => {}
+
+data - To co mi vraci mutationFn nebo mozna to co ji davam jako argument, NE data z queryFn
+variables - to co bere mutate jako argument, takze: mutate(variables)
+
+
+co kdyz ty useQuery musim volat z hooku? ASI NE
+nebo je to o tom, ze proste musim pri mutaci zmenit ty data?
+nebo ta axios instance?
+
+Ty vole davej bacha jestli volas queryClient jako new QueryClient nebo useQueryClient :-)
