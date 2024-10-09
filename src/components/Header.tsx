@@ -24,6 +24,9 @@ function Header() {
         <Link to='/auth/login' className={linkClass}>
           Login
         </Link>
+        <Link to='/distilleries/search' className={linkClass}>
+          Search
+        </Link>
       </div>
     </header>
   );

@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getRequest } from '../../api/request';
 import { AxiosResponseSchema } from '../../types/distillery';
-import { IProducts } from '../../types/products';
+import { IProduct } from '../../types/products';
 
 export const Route = createFileRoute('/products/$productId')({
   component: Product,
@@ -27,7 +27,7 @@ function Product() {
 
   const { isPending, error, data } = useQuery({
     queryKey: ['productId'],
-    queryFn: async (): Promise<IProducts[]> => {
+    queryFn: async (): Promise<IProduct[]> => {
       const res = await getRequest(`products/${productId}`);
       return await res.data;
     },

@@ -28,12 +28,31 @@ function Login() {
     const res = await postRequest({
       url: 'auth/login',
       data: { username, password },
+      withCredentials: true,
     });
+    // const res = axios.post(
+    //   'http://localhost:3000/auth/login',
+    //   {
+    //     username,
+    //     password,
+    //   },
+    //   { withCredentials: true }
+    // );
+    localStorage.setItem('user', res);
+    localStorage.setItem('isAuthenticated', 'true');
     console.log(res);
+    // const myHeaders = new Headers();
+    // myHeaders.append('Content-Type', 'application/json');
+    // fetch('http://localhost:3000/auth/login', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ username, password }),
+    //   headers: myHeaders,
+    //   credentials: 'include',
+    // });
 
     // set token to cookies
-    document.cookie = `jwt=${res.data}`;
-    localStorage.setItem('jwt', res.data);
+    // document.cookie = `jwt=${res.data}; HttpOnly`;
+    // localStorage.setItem('jwt', res.data);
   };
 
   return (

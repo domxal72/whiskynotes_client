@@ -17,7 +17,8 @@ import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as DistilleriesIndexImport } from './routes/distilleries/index'
 import { Route as ProductsProductIdImport } from './routes/products/$productId'
 import { Route as PostsPostImport } from './routes/posts/post'
-import { Route as DistilleriesDistilleryIdImport } from './routes/distilleries/$distilleryId'
+import { Route as DistilleriesSearchImport } from './routes/distilleries/search'
+import { Route as DistilleriesIdImport } from './routes/distilleries/$id'
 import { Route as AuthSignInImport } from './routes/auth/sign-in'
 import { Route as AuthLoginImport } from './routes/auth/login'
 
@@ -53,8 +54,13 @@ const PostsPostRoute = PostsPostImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DistilleriesDistilleryIdRoute = DistilleriesDistilleryIdImport.update({
-  path: '/distilleries/$distilleryId',
+const DistilleriesSearchRoute = DistilleriesSearchImport.update({
+  path: '/distilleries/search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DistilleriesIdRoute = DistilleriesIdImport.update({
+  path: '/distilleries/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -100,11 +106,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInImport
       parentRoute: typeof rootRoute
     }
-    '/distilleries/$distilleryId': {
-      id: '/distilleries/$distilleryId'
-      path: '/distilleries/$distilleryId'
-      fullPath: '/distilleries/$distilleryId'
-      preLoaderRoute: typeof DistilleriesDistilleryIdImport
+    '/distilleries/$id': {
+      id: '/distilleries/$id'
+      path: '/distilleries/$id'
+      fullPath: '/distilleries/$id'
+      preLoaderRoute: typeof DistilleriesIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/distilleries/search': {
+      id: '/distilleries/search'
+      path: '/distilleries/search'
+      fullPath: '/distilleries/search'
+      preLoaderRoute: typeof DistilleriesSearchImport
       parentRoute: typeof rootRoute
     }
     '/posts/post': {
@@ -145,7 +158,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/distilleries/$distilleryId': typeof DistilleriesDistilleryIdRoute
+  '/distilleries/$id': typeof DistilleriesIdRoute
+  '/distilleries/search': typeof DistilleriesSearchRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
@@ -157,7 +171,8 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/distilleries/$distilleryId': typeof DistilleriesDistilleryIdRoute
+  '/distilleries/$id': typeof DistilleriesIdRoute
+  '/distilleries/search': typeof DistilleriesSearchRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
@@ -170,7 +185,8 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/distilleries/$distilleryId': typeof DistilleriesDistilleryIdRoute
+  '/distilleries/$id': typeof DistilleriesIdRoute
+  '/distilleries/search': typeof DistilleriesSearchRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries/': typeof DistilleriesIndexRoute
@@ -184,7 +200,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth/login'
     | '/auth/sign-in'
-    | '/distilleries/$distilleryId'
+    | '/distilleries/$id'
+    | '/distilleries/search'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
@@ -195,7 +212,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth/login'
     | '/auth/sign-in'
-    | '/distilleries/$distilleryId'
+    | '/distilleries/$id'
+    | '/distilleries/search'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
@@ -206,7 +224,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth/login'
     | '/auth/sign-in'
-    | '/distilleries/$distilleryId'
+    | '/distilleries/$id'
+    | '/distilleries/search'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries/'
@@ -219,7 +238,8 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  DistilleriesDistilleryIdRoute: typeof DistilleriesDistilleryIdRoute
+  DistilleriesIdRoute: typeof DistilleriesIdRoute
+  DistilleriesSearchRoute: typeof DistilleriesSearchRoute
   PostsPostRoute: typeof PostsPostRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   DistilleriesIndexRoute: typeof DistilleriesIndexRoute
@@ -231,7 +251,8 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignInRoute: AuthSignInRoute,
-  DistilleriesDistilleryIdRoute: DistilleriesDistilleryIdRoute,
+  DistilleriesIdRoute: DistilleriesIdRoute,
+  DistilleriesSearchRoute: DistilleriesSearchRoute,
   PostsPostRoute: PostsPostRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   DistilleriesIndexRoute: DistilleriesIndexRoute,
@@ -254,7 +275,8 @@ export const routeTree = rootRoute
         "/about",
         "/auth/login",
         "/auth/sign-in",
-        "/distilleries/$distilleryId",
+        "/distilleries/$id",
+        "/distilleries/search",
         "/posts/post",
         "/products/$productId",
         "/distilleries/",
@@ -273,8 +295,11 @@ export const routeTree = rootRoute
     "/auth/sign-in": {
       "filePath": "auth/sign-in.tsx"
     },
-    "/distilleries/$distilleryId": {
-      "filePath": "distilleries/$distilleryId.tsx"
+    "/distilleries/$id": {
+      "filePath": "distilleries/$id.tsx"
+    },
+    "/distilleries/search": {
+      "filePath": "distilleries/search.tsx"
     },
     "/posts/post": {
       "filePath": "posts/post.tsx"
