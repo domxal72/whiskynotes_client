@@ -5,10 +5,10 @@ function Header() {
 
   return (
     <header className='p-2 flex gap-2 bg-primary text-white text-xl fixed w-full h-16'>
-      <div className='max-w-320 m-auto w-full'>
+      <div className='max-w-320 m-auto w-full flex items-center'>
         <Link to='/' className={linkClass}>
           Home
-        </Link>{' '}
+        </Link>
         <Link to='/about' className={linkClass}>
           About
         </Link>
@@ -27,6 +27,7 @@ function Header() {
         <Link to='/distilleries/search' className={linkClass}>
           Search
         </Link>
+        <div className={linkClass}>Logout</div>
       </div>
     </header>
   );

@@ -9,14 +9,14 @@ export const Route = createFileRoute('/auth/sign-in')({
 });
 
 function SignIn() {
-  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await postRequest({
       url: 'auth/sign-in',
-      data: { username, password },
+      data: { email, password },
     });
   };
 
@@ -24,12 +24,12 @@ function SignIn() {
     <form action='' className='p-4' onSubmit={handleSubmit}>
       Sign in
       <div className='flex flex-col'>
-        <label htmlFor='username'>username:</label>
+        <label htmlFor='email'>email:</label>
         <input
           type='text'
-          name='username'
-          id='username'
-          onChange={(e) => setUsername(e.target.value)}
+          name='email'
+          id='email'
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className='flex flex-col'>

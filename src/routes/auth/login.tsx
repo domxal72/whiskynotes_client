@@ -9,7 +9,7 @@ export const Route = createFileRoute('/auth/login')({
 });
 
 function Login() {
-  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleToken = async () => {
@@ -27,7 +27,7 @@ function Login() {
     e.preventDefault();
     const res = await postRequest({
       url: 'auth/login',
-      data: { username, password },
+      data: { email, password },
       withCredentials: true,
     });
     // const res = axios.post(
@@ -60,12 +60,12 @@ function Login() {
       <form action='' className='p-4' onSubmit={handleSubmit}>
         Login
         <div className='flex flex-col'>
-          <label htmlFor='username'>username:</label>
+          <label htmlFor='email'>email:</label>
           <input
             type='text'
-            name='username'
-            id='username'
-            onChange={(e) => setUsername(e.target.value)}
+            name='email'
+            id='email'
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className='flex flex-col'>

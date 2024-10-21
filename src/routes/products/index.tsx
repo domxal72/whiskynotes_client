@@ -1,12 +1,29 @@
 import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
-import axios from 'axios';
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { zodValidator, ZodValidator } from '@tanstack/zod-form-adapter';
+import axios from 'axios';
+import { z } from 'zod';
+import { emptyStringToNullByDefault } from '../../utils/zod';
+
 import { getRequest, postRequest } from '../../api/request';
-import { IProduct } from '../../types/products';
+import { IProduct, productSchema } from '../../types/products';
 import { getUserFromStorage } from '../../utils/getUser';
 import RequireAuth from '../../components/RequireAuth';
+import { getUrl } from '../../utils/getUrl';
+
+function FieldInfo({ field }) {
+  return (
+    <>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <em>{field.state.meta.errors.join(',')}</em>
+      ) : null}
+      {field.state.meta.isValidating ? 'Validating...' : null}
+    </>
+  );
+}
+
+type ProductSchema = z.infer<typeof productSchema>;
 
 export const Route = createFileRoute('/products/')({
   // component: Products,
@@ -44,6 +61,15 @@ function Products() {
     },
   });
 
+  const getProduct = useQuery({
+    queryKey: ['productsId'],
+    queryFn: async (): Promise<IProduct> => {
+      return await getRequest('products/245');
+    },
+  });
+
+  console.log(getProduct.data);
+
   const {
     isPending: distilleriesPending,
     error: distilleriesError,
@@ -76,35 +102,34 @@ function Products() {
     },
   });
 
-  const addProductForm = useForm({
+  // const addProductForm = useForm<ProductSchema, ZodValidator>({
+  const addProductForm = useForm<ProductSchema, ZodValidator>({
+    // const addProductForm = useForm({
     defaultValues: {
-      id: 0, // TODO: mam tam pridavat ID kvuli typescriptu nebo ne?
       name: '',
-      description: '',
+      description: getProduct?.data?.description ?? '',
+      // description: '',
+      ABV: '',
+      vol: '',
+      age: '',
+      rating: '',
       distilleryId: 2161,
-      ABV: 0,
-      vol: 0,
       isPeated: false,
-      age: 0,
-      rating: 0,
       status: 'none',
       imgFile: null,
+      price: '',
     },
+    validators: {
+      // onSubmit: productSchema,
+    },
+    validatorAdapter: zodValidator(),
     onSubmit: async ({ value }) => {
-      const formData = new FormData();
-      console.log(value);
-      formData.append('imgFile', value.imgFile);
-      // formData.append('name', value.name);
+      const form = document.getElementById('postProduct') as HTMLFormElement;
+      // Pokud zadam form element jako parametr tak si to automaticky nacte vsechny inputy,
+      // co v ty forme jsou a nemusim je tam jak kokot vypisovat pres append, napr:
       // formData.append('description', value.description);
-      // formData.append('distilleryId', value.distilleryId);
-      // formData.append('ABV', value.ABV);
-      // formData.append('vol', value.vol);
-      // formData.append('status', value.status);
-      // formData.append('rating', value.rating);
-      // formData.append('age', value.age);
-      formData.append('value', value);
+      const formData = new FormData(form);
       mutateAsync(formData);
-      // mutateAsync(value);
     },
   });
 
@@ -118,13 +143,15 @@ function Products() {
 
   return (
     <div>
+      <button>get Product</button>
       <div>
         <form
+          id='postProduct'
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log(addProductForm.state);
             addProductForm.handleSubmit();
+            console.log(addProductForm.state);
           }}
           className='flex flex-wrap gap-2'
           encType='multipart/form-data'
@@ -133,6 +160,12 @@ function Products() {
           <div className='flex flex-col'>
             <addProductForm.Field
               name='name'
+              validators={{
+                onSubmit: z.string().min(1, {
+                  message: 'This field is required',
+                }),
+                // onChange: z.coerce.number({ message: 'not a number..' }),
+              }}
               children={(field) => (
                 <>
                   <label htmlFor='name'>name:</label>
@@ -143,6 +176,7 @@ function Products() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
+                  <FieldInfo field={field} />
                 </>
               )}
             />
@@ -167,20 +201,31 @@ function Products() {
           <div className='flex flex-col'>
             <addProductForm.Field
               name='ABV'
+              validators={{
+                onChange: z.coerce.number({ message: 'must be a number' }),
+                onSubmit: z.coerce.number({
+                  message: 'must be a number submit',
+                }),
+
+                // onChange: z.preprocess(
+                //   (val) => Number(val),
+                //   z.number({ message: 'must be a number' })
+                // ),
+              }}
               children={(field) => (
                 <>
-                  <label htmlFor='ABV'>ABV:</label>
+                  <label htmlFor='ABV'>ABV(%):</label>
                   <input
                     name={field.name}
-                    type='number'
-                    step='0.01'
-                    inputMode='decimal'
+                    type='text'
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) =>
-                      field.handleChange(parseFloat(e.target.value))
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      return field.handleChange(val);
+                    }}
                   />
+                  <FieldInfo field={field} />
                 </>
               )}
             />
@@ -312,22 +357,40 @@ function Products() {
           <div className='flex flex-col'>
             <addProductForm.Field
               name='imgFile'
+              validators={
+                {
+                  // onChange: console.log()
+                }
+              }
               children={(field) => (
                 <>
                   <label htmlFor='imgFile'>imgFile:</label>
                   <input
                     name={field.name}
                     type='file'
+                    id='fileInput'
                     // value={''}
+                    accept='image/*'
                     onBlur={field.handleBlur}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      field.handleChange(e.target.files[0])
-                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      console.log(document.getElementById('fileInput')?.files);
+                      return field.handleChange(e.target.files[0]);
+                    }}
                   />
                 </>
               )}
             />
           </div>
+          <addProductForm.Subscribe
+            selector={(state) => [state.errorMap]}
+            children={([errorMap]) =>
+              errorMap.onSubmit ? (
+                <div>
+                  <em>There was an error on the form: {errorMap.onSubmit}</em>
+                </div>
+              ) : null
+            }
+          />
           <button type='submit'>Submit</button>
         </form>
       </div>
@@ -341,7 +404,7 @@ function Products() {
           </tr>
         </thead>
         <tbody>
-          {data.map(({ id, name, description, ABV, is_peated }) => (
+          {data.map(({ id, name, description, ABV, is_peated, image_url }) => (
             <tr key={id}>
               <td>
                 <Link to='/distilleries/$id' params={{ id: id?.toString() }}>
@@ -351,6 +414,12 @@ function Products() {
               <td>{description}</td>
               <td>{ABV}</td>
               <td>{is_peated}</td>
+              <td>
+                <img
+                  src={getUrl('uploads/images/') + image_url}
+                  alt={image_url}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
