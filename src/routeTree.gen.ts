@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProductsIndexImport } from './routes/products/index'
+import { Route as MapIndexImport } from './routes/map/index'
 import { Route as DistilleriesIndexImport } from './routes/distilleries/index'
 import { Route as ProductsProductIdImport } from './routes/products/$productId'
 import { Route as PostsPostImport } from './routes/posts/post'
@@ -36,6 +37,11 @@ const IndexRoute = IndexImport.update({
 
 const ProductsIndexRoute = ProductsIndexImport.update({
   path: '/products/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MapIndexRoute = MapIndexImport.update({
+  path: '/map/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -141,6 +147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DistilleriesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/map/': {
+      id: '/map/'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -163,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
+  '/map': typeof MapIndexRoute
   '/products': typeof ProductsIndexRoute
 }
 
@@ -176,6 +190,7 @@ export interface FileRoutesByTo {
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
+  '/map': typeof MapIndexRoute
   '/products': typeof ProductsIndexRoute
 }
 
@@ -190,6 +205,7 @@ export interface FileRoutesById {
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries/': typeof DistilleriesIndexRoute
+  '/map/': typeof MapIndexRoute
   '/products/': typeof ProductsIndexRoute
 }
 
@@ -205,6 +221,7 @@ export interface FileRouteTypes {
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
+    | '/map'
     | '/products'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -217,6 +234,7 @@ export interface FileRouteTypes {
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
+    | '/map'
     | '/products'
   id:
     | '__root__'
@@ -229,6 +247,7 @@ export interface FileRouteTypes {
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries/'
+    | '/map/'
     | '/products/'
   fileRoutesById: FileRoutesById
 }
@@ -243,6 +262,7 @@ export interface RootRouteChildren {
   PostsPostRoute: typeof PostsPostRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   DistilleriesIndexRoute: typeof DistilleriesIndexRoute
+  MapIndexRoute: typeof MapIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
 }
 
@@ -256,6 +276,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsPostRoute: PostsPostRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   DistilleriesIndexRoute: DistilleriesIndexRoute,
+  MapIndexRoute: MapIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
 }
 
@@ -280,6 +301,7 @@ export const routeTree = rootRoute
         "/posts/post",
         "/products/$productId",
         "/distilleries/",
+        "/map/",
         "/products/"
       ]
     },
@@ -309,6 +331,9 @@ export const routeTree = rootRoute
     },
     "/distilleries/": {
       "filePath": "distilleries/index.tsx"
+    },
+    "/map/": {
+      "filePath": "map/index.tsx"
     },
     "/products/": {
       "filePath": "products/index.tsx"

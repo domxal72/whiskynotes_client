@@ -27,6 +27,9 @@ function Header() {
         <Link to='/distilleries/search' className={linkClass}>
           Search
         </Link>
+        <Link to='/map' className={linkClass}>
+          Map
+        </Link>
         <div className={linkClass}>Logout</div>
       </div>
     </header>

@@ -68,8 +68,6 @@ function Products() {
     },
   });
 
-  console.log(getProduct.data);
-
   const {
     isPending: distilleriesPending,
     error: distilleriesError,
