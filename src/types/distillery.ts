@@ -19,7 +19,12 @@ export interface IDistillery {
   id: number
   name: string
   country?: string
-  region?: string
+  x_coors?: number
+  y_coors?: number
+  slug?: string
   founded?: number
   website?: string
+  owner?: string
+  location?: string
+  region?: string
 }
