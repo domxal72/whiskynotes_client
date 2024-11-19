@@ -7,9 +7,7 @@ import { IDistillery } from '../types/distillery';
 
 import { Map, View } from 'ol';
 // Subfolders must have .js extension!
-import { Point } from 'ol/geom.js';
 import { Style, Icon } from 'ol/style.js';
-import Feature from 'ol/Feature.js';
 import TileLayer from 'ol/layer/Tile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
@@ -17,7 +15,6 @@ import OSM from 'ol/source/OSM.js';
 import { useGeographic } from 'ol/proj.js';
 import { GeoJSON } from 'ol/format.js';
 import Overlay from 'ol/Overlay.js';
-import { bbox } from 'ol/loadingstrategy.js';
 import { toLonLat } from 'ol/proj.js';
 import { toStringHDMS } from 'ol/coordinate.js';
 

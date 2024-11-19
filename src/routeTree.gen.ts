@@ -18,6 +18,7 @@ import { Route as MapIndexImport } from './routes/map/index'
 import { Route as DistilleriesIndexImport } from './routes/distilleries/index'
 import { Route as ProductsProductIdImport } from './routes/products/$productId'
 import { Route as PostsPostImport } from './routes/posts/post'
+import { Route as DistilleriesTestDataComponentImport } from './routes/distilleries/test-data-component'
 import { Route as DistilleriesSearchImport } from './routes/distilleries/search'
 import { Route as DistilleriesIdImport } from './routes/distilleries/$id'
 import { Route as AuthSignInImport } from './routes/auth/sign-in'
@@ -59,6 +60,12 @@ const PostsPostRoute = PostsPostImport.update({
   path: '/posts/post',
   getParentRoute: () => rootRoute,
 } as any)
+
+const DistilleriesTestDataComponentRoute =
+  DistilleriesTestDataComponentImport.update({
+    path: '/distilleries/test-data-component',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const DistilleriesSearchRoute = DistilleriesSearchImport.update({
   path: '/distilleries/search',
@@ -126,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DistilleriesSearchImport
       parentRoute: typeof rootRoute
     }
+    '/distilleries/test-data-component': {
+      id: '/distilleries/test-data-component'
+      path: '/distilleries/test-data-component'
+      fullPath: '/distilleries/test-data-component'
+      preLoaderRoute: typeof DistilleriesTestDataComponentImport
+      parentRoute: typeof rootRoute
+    }
     '/posts/post': {
       id: '/posts/post'
       path: '/posts/post'
@@ -173,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInRoute
   '/distilleries/$id': typeof DistilleriesIdRoute
   '/distilleries/search': typeof DistilleriesSearchRoute
+  '/distilleries/test-data-component': typeof DistilleriesTestDataComponentRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
@@ -187,6 +202,7 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof AuthSignInRoute
   '/distilleries/$id': typeof DistilleriesIdRoute
   '/distilleries/search': typeof DistilleriesSearchRoute
+  '/distilleries/test-data-component': typeof DistilleriesTestDataComponentRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries': typeof DistilleriesIndexRoute
@@ -202,6 +218,7 @@ export interface FileRoutesById {
   '/auth/sign-in': typeof AuthSignInRoute
   '/distilleries/$id': typeof DistilleriesIdRoute
   '/distilleries/search': typeof DistilleriesSearchRoute
+  '/distilleries/test-data-component': typeof DistilleriesTestDataComponentRoute
   '/posts/post': typeof PostsPostRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/distilleries/': typeof DistilleriesIndexRoute
@@ -218,6 +235,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/distilleries/$id'
     | '/distilleries/search'
+    | '/distilleries/test-data-component'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
@@ -231,6 +249,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/distilleries/$id'
     | '/distilleries/search'
+    | '/distilleries/test-data-component'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries'
@@ -244,6 +263,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/distilleries/$id'
     | '/distilleries/search'
+    | '/distilleries/test-data-component'
     | '/posts/post'
     | '/products/$productId'
     | '/distilleries/'
@@ -259,6 +279,7 @@ export interface RootRouteChildren {
   AuthSignInRoute: typeof AuthSignInRoute
   DistilleriesIdRoute: typeof DistilleriesIdRoute
   DistilleriesSearchRoute: typeof DistilleriesSearchRoute
+  DistilleriesTestDataComponentRoute: typeof DistilleriesTestDataComponentRoute
   PostsPostRoute: typeof PostsPostRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   DistilleriesIndexRoute: typeof DistilleriesIndexRoute
@@ -273,6 +294,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignInRoute: AuthSignInRoute,
   DistilleriesIdRoute: DistilleriesIdRoute,
   DistilleriesSearchRoute: DistilleriesSearchRoute,
+  DistilleriesTestDataComponentRoute: DistilleriesTestDataComponentRoute,
   PostsPostRoute: PostsPostRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   DistilleriesIndexRoute: DistilleriesIndexRoute,
@@ -298,6 +320,7 @@ export const routeTree = rootRoute
         "/auth/sign-in",
         "/distilleries/$id",
         "/distilleries/search",
+        "/distilleries/test-data-component",
         "/posts/post",
         "/products/$productId",
         "/distilleries/",
@@ -322,6 +345,9 @@ export const routeTree = rootRoute
     },
     "/distilleries/search": {
       "filePath": "distilleries/search.tsx"
+    },
+    "/distilleries/test-data-component": {
+      "filePath": "distilleries/test-data-component.tsx"
     },
     "/posts/post": {
       "filePath": "posts/post.tsx"
