@@ -1,7 +1,7 @@
-import {literal, z} from 'zod'
-import {emptyStringToNullByDefault, safeNumberOrNullInput} from '../utils/zod'
+import {z} from 'zod'
+import {safeNumberOrNullInput} from '../utils/zod'
 
-export interface IProduct {
+export type TProduct = {
   id: number
   name: string
   description?: string
@@ -12,13 +12,14 @@ export interface IProduct {
   is_peated?: boolean
   image_url?: string
   price?: number
-  age?: number | 'NAS'
+  stated_age?: number | 'NAS'
   status: TProductStatus
   rating: number
 }
 
 export type TProductStatus = 'in collection' | 'tasted' | 'wish' | 'none'
 
+// Zod validation example
 export const productSchema = z.object({
   name: z.string().min(1, {message: 'zadejte nazev'}),
   description: z.string().nullable().default(null),

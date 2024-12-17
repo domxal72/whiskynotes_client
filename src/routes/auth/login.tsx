@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import axios from 'axios';
 
-import { getRequest, postRequest } from '../../api/request';
+import { postRequest } from '../../api/request';
 
 export const Route = createFileRoute('/auth/login')({
   component: Login,
@@ -12,35 +11,29 @@ function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleToken = async () => {
-    const res = await postRequest({
-      url: 'auth/test',
-      // data: { username, password },
-      headers: {
-        authorization: localStorage.getItem('jwt'),
-      },
-    });
-    console.log(res);
-  };
+  // TODO: use localStorage or cookies?
+  // const handleToken = async () => {
+  //   const res = await postRequest({
+  //     url: 'auth/test',
+  //     // data: { username, password },
+  //     headers: {
+  //       authorization: localStorage.getItem('jwt'),
+  //     },
+  //   });
+  // };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
-    const res = await postRequest({
+    const res: string = await postRequest({
       url: 'auth/login',
       data: { email, password },
       withCredentials: true,
     });
-    // const res = axios.post(
-    //   'http://localhost:3000/auth/login',
-    //   {
-    //     username,
-    //     password,
-    //   },
-    //   { withCredentials: true }
-    // );
-    localStorage.setItem('user', res);
+
+    // TODO: auth placeholder...
     localStorage.setItem('isAuthenticated', 'true');
-    console.log(res);
+
+    // TODO: use cookies and headers?
     // const myHeaders = new Headers();
     // myHeaders.append('Content-Type', 'application/json');
     // fetch('http://localhost:3000/auth/login', {
@@ -79,7 +72,7 @@ function Login() {
         </div>
         <button type='submit'>submit</button>
       </form>
-      <button onClick={handleToken}>token</button>
+      {/* <button onClick={handleToken}>token</button> */}
     </>
   );
 }

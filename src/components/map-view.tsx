@@ -3,7 +3,7 @@ import { z } from 'zod';
 import 'ol/ol.css';
 
 import PinIcon from '../assets/images/distillery-icon.svg';
-import { IDistillery } from '../types/distillery';
+import { TDistillery } from '../types/distillery';
 
 import { Map, View } from 'ol';
 // Subfolders must have .js extension!
@@ -43,12 +43,11 @@ const coorsSchema = z.tuple([
   z.number().min(-180).max(180),
 ]);
 
-function transformToGeoJSON(data: IDistillery[]): TGeoJSON {
+function transformToGeoJSON(data: TDistillery[]): TGeoJSON {
   const features = data.filter(
     ({ x_coors, y_coors }) => coorsSchema.safeParse([x_coors, y_coors]).success
   );
-  console.log(data);
-  console.log(features);
+
   const coorsFeatures = features.map(({ id, name, x_coors, y_coors }) => {
     return {
       type: 'Feature',
@@ -80,7 +79,7 @@ const noData = {
 };
 
 type TMapViewProps = {
-  data?: IDistillery[];
+  data?: TDistillery[];
 };
 
 function MapView({ data }: TMapViewProps) {
@@ -133,21 +132,22 @@ function MapView({ data }: TMapViewProps) {
 
     map.setTarget(mapRef.current);
 
+    // TODO: popup example
     // closer.onclick = function () {
     //   overlay.setPosition(undefined);
     //   closer.blur();
     //   return false;
     // };
 
-    map.on('singleclick', function (evt) {
-      const coordinate = evt.coordinate;
-      const hdms = toStringHDMS(toLonLat(coordinate));
-      console.log(coordinate);
+    // map.on('singleclick', function (evt) {
+    //   const coordinate = evt.coordinate;
+    //   const hdms = toStringHDMS(toLonLat(coordinate));
+    //   console.log(coordinate);
 
-      contentRef.current.innerHTML =
-        '<p>You clicked here:</p><code>' + hdms + '</code>';
-      overlay.setPosition(coordinate);
-    });
+    //   contentRef.current.innerHTML =
+    //     '<p>You clicked here:</p><code>' + hdms + '</code>';
+    //   overlay.setPosition(coordinate);
+    // });
 
     return () => {
       map.setTarget(undefined);

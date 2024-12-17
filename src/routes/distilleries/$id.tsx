@@ -3,7 +3,7 @@ import { useForm } from '@tanstack/react-form';
 
 import { useQuery } from '@tanstack/react-query';
 import { getRequest, deleteRequest, updateRequest } from '../../api/request';
-import { IDistillery } from '../../types/distillery';
+import { TDistillery } from '../../types/distillery';
 
 export const Route = createFileRoute('/distilleries/$id')({
   component: Distillery,
@@ -14,7 +14,7 @@ function Distillery() {
   const navigate = useNavigate();
   const { isPending, error, data } = useQuery({
     queryKey: ['distilleryId'],
-    queryFn: async (): Promise<IDistillery[]> =>
+    queryFn: async (): Promise<TDistillery[]> =>
       getRequest(`distilleries/distillery/${id}`),
   });
 
@@ -22,8 +22,6 @@ function Distillery() {
     await deleteRequest(`distilleries/distillery/${id}`);
     navigate({ to: '/distilleries' });
   };
-
-  console.log(data);
 
   if (isPending) {
     return <span>loading..</span>;
@@ -36,36 +34,47 @@ function Distillery() {
   return (
     <div>
       <DistilleryUpdateForm data={data} />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Country</th>
-            <th>Founded</th>
-            <th>Region</th>
-            <th>Website</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(({ id, name, country, founded, region, website }) => (
-            <tr key={id}>
-              <td>{name}</td>
-              <td>{country}</td>
-              <td>{founded}</td>
-              <td>{region}</td>
-              <td>{website}</td>
-              <td>
-                <button onClick={() => handleDelete(id)}>delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DistilleriesTable data={data} handleDelete={handleDelete} />
     </div>
   );
 }
 
-function DistilleryUpdateForm({ data }: { data: IDistillery[] }) {
+type TDistilleriesTableProps = {
+  data: TDistillery[];
+  handleDelete: (id: number) => void;
+};
+
+function DistilleriesTable({ data, handleDelete }: TDistilleriesTableProps) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Country</th>
+          <th>Founded</th>
+          <th>Region</th>
+          <th>Website</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map(({ id, name, country, founded, region, website }) => (
+          <tr key={id}>
+            <td>{name}</td>
+            <td>{country}</td>
+            <td>{founded}</td>
+            <td>{region}</td>
+            <td>{website}</td>
+            <td>
+              <button onClick={() => handleDelete(id)}>delete</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function DistilleryUpdateForm({ data }: { data: TDistillery[] }) {
   const navigate = useNavigate();
 
   const addProductForm = useForm({
@@ -76,7 +85,6 @@ function DistilleryUpdateForm({ data }: { data: IDistillery[] }) {
       founded: data[0].founded ?? 0,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
       await updateRequest({
         url: `distilleries/distillery/${value.id}`,
         data: { value },
@@ -104,7 +112,7 @@ function DistilleryUpdateForm({ data }: { data: IDistillery[] }) {
             name='id'
             children={(field) => (
               <>
-                {/* <label htmlFor='id'>id:</label> */}
+                <label htmlFor='id'>id:</label>
                 <input
                   name={field.name}
                   hidden
@@ -112,7 +120,6 @@ function DistilleryUpdateForm({ data }: { data: IDistillery[] }) {
                   type='text'
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  // onChange={(e) => field.handleChange(e.target.value)}
                 />
               </>
             )}

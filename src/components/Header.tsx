@@ -1,37 +1,60 @@
 import { Link } from '@tanstack/react-router';
 
-function Header() {
-  const linkClass = '[&.active]:underline hover:text-shade p-2 transition-all';
+type TLink = {
+  linkName: string;
+  href: string;
+};
 
+const links: TLink[] = [
+  {
+    linkName: 'Home',
+    href: '/',
+  },
+  {
+    linkName: 'About',
+    href: '/about',
+  },
+  {
+    linkName: 'Distilleries',
+    href: '/distilleries',
+  },
+  {
+    linkName: 'Products',
+    href: '/products',
+  },
+  {
+    linkName: 'Sign in',
+    href: '/auth/sign-in',
+  },
+  {
+    linkName: 'Login',
+    href: '/auth/login',
+  },
+  {
+    linkName: 'Map',
+    href: '/map',
+  },
+  {
+    linkName: 'Test',
+    href: '/distilleries/context-test-component',
+  },
+];
+
+function Header() {
   return (
     <header className='p-2 flex gap-2 bg-primary text-white text-xl fixed w-full h-16'>
-      <div className='max-w-320 m-auto w-full flex items-center'>
-        <Link to='/' className={linkClass}>
-          Home
-        </Link>
-        <Link to='/about' className={linkClass}>
-          About
-        </Link>
-        <Link to='/distilleries' className={linkClass}>
-          Distilleries
-        </Link>
-        <Link to='/products' className={linkClass}>
-          Products
-        </Link>
-        <Link to='/auth/sign-in' className={linkClass}>
-          Sign in
-        </Link>
-        <Link to='/auth/login' className={linkClass}>
-          Login
-        </Link>
-        <Link to='/distilleries/search' className={linkClass}>
-          Search
-        </Link>
-        <Link to='/map' className={linkClass}>
-          Map
-        </Link>
-        <div className={linkClass}>Logout</div>
-      </div>
+      <ul className='max-w-320 m-auto w-full flex items-center'>
+        {links.map(({ linkName, href }) => (
+          <li>
+            <Link
+              to={href}
+              className='[&.active]:underline hover:text-shade p-2 transition-all'
+            >
+              {linkName}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </header>
   );
 }

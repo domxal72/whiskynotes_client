@@ -1,9 +1,7 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useForm } from '@tanstack/react-form';
-
+import { createFileRoute } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getRequest, postRequest, updateRequest } from '../../api/request';
-import { IDistillery } from '../../types/distillery';
+import { postRequest } from '../../api/request';
+import { TDistillery } from '../../types/distillery';
 
 export const Route = createFileRoute('/distilleries/search')({
   component: DistillerySearch,
@@ -14,12 +12,11 @@ function DistillerySearch() {
 
   const { isPending, error, data } = useQuery({
     queryKey: ['distilleriesSearch'],
-    queryFn: async (): Promise<IDistillery[]> =>
+    queryFn: async (): Promise<TDistillery[]> =>
       postRequest({
         url: `distilleries/distillery/search`,
         data: { search: '' },
       }),
-    // getRequest(`distilleries/search/:name`),
   });
 
   const { mutateAsync } = useMutation({
@@ -31,33 +28,31 @@ function DistillerySearch() {
         data: { search: value },
       });
     },
-    onSuccess: (data, variables) => {
-      console.log(data);
-      console.log(variables);
-      // queryClient.invalidateQueries({ queryKey: ['distilleriesSearch'] });
-      // queryClient.fetchQuery({
-      //   queryKey: ['distilleriesSearch'],
-      //   queryFn: async (): Promise<IDistillery[]> =>
-      //     postRequest({
-      //       url: `distilleries/distillery/search`,
-      //       data: { search: variables },
-      //     }),
-      // });
+    onSuccess: (data) => {
       queryClient.setQueryData(['distilleriesSearch'], data);
     },
   });
 
   const handleMutate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // if (value.length >= 2) {
-    mutateAsync(value);
-    // }
+    mutateAsync(e.target.value);
   };
 
   if (isPending || error) {
     return 'no data';
   }
 
+  return <DistillerySearchView data={data} handleMutate={handleMutate} />;
+}
+
+type TDistillerySearchViewProps = {
+  data: TDistillery[];
+  handleMutate: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+function DistillerySearchView({
+  data,
+  handleMutate,
+}: TDistillerySearchViewProps) {
   return (
     <div>
       <div className='flex flex-col'>

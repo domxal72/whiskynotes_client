@@ -1,15 +1,36 @@
 import axios from "axios";
 
+// TODO: Create list of request instances to avoid code duplication
+// something like... 
+// const methods = ['get', 'post', 'put', 'delete']
+
+// function createRequests(methods: string[]){
+//   const requests = {}
+//   methods.forEach((method) => (
+//     requests[`${method}Request`] = 
+//     axios.create({
+//       baseURL: import.meta.env.VITE_API_BASE_URL,
+//       method: method.toUpperCase(),
+//       responseType: 'json',
+//       withCredentials: true,
+//     })
+//     // intercept response to return only data and not full AxiosResponseSchema
+//     // to avoid nested data.data object in frontend 
+//     .interceptors.response.use(function (res) {
+//       return res.data;
+//     }, function (error) {
+//       return Promise.reject(error);
+//     })
+//   ))
+
+//   return requests
+// }
+
 export const getRequest = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   method: 'GET',
   responseType: 'json',
   withCredentials: true,
-  // transformResponse: [function (data) {
-  //   // Do whatever you want to transform the data
-  //   return data.data;
-  // }],
-  // headers: {'X-Custom-Header': 'foobar'}
 })
 
 // intercept response to return only data and not full AxiosResponseSchema
@@ -25,8 +46,6 @@ export const postRequest = axios.create({
   method: 'POST',
   responseType: 'json',
   withCredentials: true,
-
-  // headers: {'X-Custom-Header': 'foobar'}
 })
 
 // intercept response to return only data and not full AxiosResponseSchema

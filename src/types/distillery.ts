@@ -2,7 +2,7 @@ export type TsqlResponseData = {
   command: string;
   rowCount: number;
   oid: null;
-  rows: IDistillery[];
+  rows: TDistillery[];
   fields: unknown[];
 };
 
@@ -15,7 +15,7 @@ export type AxiosResponseSchema<T> = {
   request: object
 };
 
-export interface IDistillery {
+export type TDistillery = {
   id: number
   name: string
   country?: string

@@ -2,8 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 
 import { useQuery } from '@tanstack/react-query';
 import { getRequest } from '../../api/request';
-import { AxiosResponseSchema } from '../../types/distillery';
-import { IProduct } from '../../types/products';
+import { TProduct } from '../../types/products';
 
 export const Route = createFileRoute('/products/$productId')({
   component: Product,
@@ -12,28 +11,13 @@ export const Route = createFileRoute('/products/$productId')({
 function Product() {
   const { productId } = Route.useParams();
 
-  // Intercept to avoid data.data object in response
-  // getRequest.interceptors.response.use(async function (response) {
-  //   return response.data;
-  // });
-  // getRequest.interceptors.response.use((res) => res.data);
-
-  // async function getReq() {
-  //   const res = await getRequest(`products/${productId}`);
-  //   return await res.data;
-  // }
-
-  // getReq();
-
   const { isPending, error, data } = useQuery({
     queryKey: ['productId'],
-    queryFn: async (): Promise<IProduct[]> => {
+    queryFn: async (): Promise<TProduct[]> => {
       const res = await getRequest(`products/${productId}`);
       return await res.data;
     },
   });
-
-  console.log(data);
 
   if (isPending) {
     return <span>loading..</span>;

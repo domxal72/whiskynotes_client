@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getRequest, postRequest, updateRequest } from '../../api/request';
-import { IDistillery } from '../../types/distillery';
+import { TDistillery } from '../../types/distillery';
 
 export const Route = createFileRoute('/distilleries/test-data-component')({
   component: DistilleryTest,
@@ -39,7 +39,7 @@ function useData<T>({
   );
 }
 
-function ViewComponentDistilleries({ data }: { data: IDistillery[] }) {
+function ViewComponentDistilleries({ data }: { data: TDistillery[] }) {
   return (
     <div>
       <div className='flex'>
@@ -59,7 +59,7 @@ function ViewComponentDistilleries({ data }: { data: IDistillery[] }) {
 }
 
 function DistilleryTest() {
-  const view = useData<IDistillery>({
+  const view = useData<TDistillery>({
     noDataMsg: 'overriden message',
     Component: ViewComponentDistilleries,
     src: 'distilleries/',

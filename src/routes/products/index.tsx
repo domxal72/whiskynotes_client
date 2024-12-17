@@ -1,15 +1,14 @@
+// TODO: REFACTOR validation, add types and divide components,...
 import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodValidator, ZodValidator } from '@tanstack/zod-form-adapter';
-import axios from 'axios';
 import { z } from 'zod';
-import { emptyStringToNullByDefault } from '../../utils/zod';
 
 import { getRequest, postRequest } from '../../api/request';
-import { IProduct, productSchema } from '../../types/products';
+import { TProduct, productSchema } from '../../types/products';
 import { getUserFromStorage } from '../../utils/getUser';
-import RequireAuth from '../../components/RequireAuth';
+import RequireAuth from '../../components/require-auth';
 import { getUrl } from '../../utils/getUrl';
 
 function FieldInfo({ field }) {
@@ -26,29 +25,30 @@ function FieldInfo({ field }) {
 type ProductSchema = z.infer<typeof productSchema>;
 
 export const Route = createFileRoute('/products/')({
-  // component: Products,
   component: () => {
-    if (getUserFromStorage()) {
-      return <Products />;
-    } else {
-      return <RequireAuth />;
-    }
+    // TODO: use conditional components?
+    // if (getUserFromStorage()) {
+    //   return <Products />;
+    // } else {
+    //   return <RequireAuth />;
+    // }
+    return <Products />;
   },
 
   // for redirection
-  // beforeLoad: async ({ location }) => {
-  //   if (!getUserFromStorage()) {
-  //     throw redirect({
-  //       to: '/auth/login',
-  //       search: {
-  //         // Use the current location to power a redirect after login
-  //         // (Do not use `router.state.resolvedLocation` as it can
-  //         // potentially lag behind the actual current location)
-  //         redirect: location.href,
-  //       },
-  //     });
-  //   }
-  // },
+  beforeLoad: async ({ location }) => {
+    if (!getUserFromStorage()) {
+      throw redirect({
+        to: '/auth/login',
+        search: {
+          // Use the current location to power a redirect after login
+          // (Do not use `router.state.resolvedLocation` as it can
+          // potentially lag behind the actual current location)
+          redirect: location.href,
+        },
+      });
+    }
+  },
 });
 
 function Products() {
@@ -56,14 +56,14 @@ function Products() {
 
   const { isPending, error, data } = useQuery({
     queryKey: ['products'],
-    queryFn: async (): Promise<IProduct[]> => {
+    queryFn: async (): Promise<TProduct[]> => {
       return await getRequest('products/');
     },
   });
 
   const getProduct = useQuery({
     queryKey: ['productsId'],
-    queryFn: async (): Promise<IProduct> => {
+    queryFn: async (): Promise<TProduct> => {
       return await getRequest('products/245');
     },
   });
@@ -74,39 +74,33 @@ function Products() {
     data: distilleries,
   } = useQuery({
     queryKey: ['distilleries'],
-    queryFn: async (): Promise<IProduct[]> => {
+    queryFn: async (): Promise<TProduct[]> => {
       return await getRequest('distilleries/names');
     },
   });
 
   const { mutateAsync } = useMutation({
     mutationFn: async (formData: FormData) => {
-      // mutationFn: async (value: IProduct) => {
       // Return data stored to database
       return await postRequest({
         url: 'products/',
         data: formData,
-        // data: { value },
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       console.log(data);
-      queryClient.setQueryData(['products'], (oldData: IProduct[]) => [
+      queryClient.setQueryData(['products'], (oldData: TProduct[]) => [
         ...oldData,
         data,
       ]);
-      // queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 
-  // const addProductForm = useForm<ProductSchema, ZodValidator>({
   const addProductForm = useForm<ProductSchema, ZodValidator>({
-    // const addProductForm = useForm({
     defaultValues: {
       name: '',
       description: getProduct?.data?.description ?? '',
-      // description: '',
       ABV: '',
       vol: '',
       age: '',
@@ -141,7 +135,6 @@ function Products() {
 
   return (
     <div>
-      <button>get Product</button>
       <div>
         <form
           id='postProduct'
@@ -162,7 +155,7 @@ function Products() {
                 onSubmit: z.string().min(1, {
                   message: 'This field is required',
                 }),
-                // onChange: z.coerce.number({ message: 'not a number..' }),
+                onChange: z.coerce.number({ message: 'not a number..' }),
               }}
               children={(field) => (
                 <>
@@ -204,11 +197,6 @@ function Products() {
                 onSubmit: z.coerce.number({
                   message: 'must be a number submit',
                 }),
-
-                // onChange: z.preprocess(
-                //   (val) => Number(val),
-                //   z.number({ message: 'must be a number' })
-                // ),
               }}
               children={(field) => (
                 <>
@@ -367,7 +355,6 @@ function Products() {
                     name={field.name}
                     type='file'
                     id='fileInput'
-                    // value={''}
                     accept='image/*'
                     onBlur={field.handleBlur}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -423,17 +410,13 @@ function Products() {
         </tbody>
       </table>
       <form
-        action='http://localhost:3000/products/'
+        action={`${import.meta.env.VITE_API_BASE_URL}products/`}
         className='flex flex-wrap gap-2'
         encType='multipart/form-data'
         method='post'
       >
         <label htmlFor='imgFile'>imgFile:</label>
-        <input
-          name='imgFile'
-          type='file'
-          // value={''}
-        />
+        <input name='imgFile' type='file' />
         <button type='submit'>Submit only</button>
       </form>
     </div>

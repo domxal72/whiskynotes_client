@@ -1,32 +1,19 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useCallback, useState } from 'react';
-import {
-  useQuery,
-  useMutation,
-  QueryClient,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { getRequest, postRequest } from '../../api/request';
-import { AxiosResponseSchema, IDistillery } from '../../types/distillery';
-import axios from 'axios';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getRequest } from '../../api/request';
+import { TDistillery } from '../../types/distillery';
 
 export const Route = createFileRoute('/distilleries/')({
   component: Distilleries,
 });
 
 function Distilleries() {
-  const [country, setCountry] = useState<string>('');
-  const [region, setRegion] = useState<string>('');
-  const [id, setId] = useState<string>('');
-
   const queryClient = useQueryClient();
 
   const { isPending, isError, data } = useQuery({
     queryKey: ['distilleries'],
-    queryFn: async (): Promise<IDistillery[]> => {
-      return await getRequest(
-        `distilleries/?country=${country}&region=${region}`
-      );
+    queryFn: async (): Promise<TDistillery[]> => {
+      return await getRequest(`distilleries/`);
     },
   });
 
@@ -35,36 +22,21 @@ function Distilleries() {
       country,
     }: {
       country: string;
-    }): Promise<IDistillery[]> => {
+    }): Promise<TDistillery[]> => {
       return await getRequest(`distilleries/?country=${country}`);
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(['distilleries'], (oldData: IDistillery[]) => {
-        console.log(data);
-        return [
-          // ...oldData,
-          ...data,
-        ];
+    onSuccess: (data) => {
+      queryClient.setQueryData(['distilleries'], () => {
+        return [...data];
       });
     },
   });
-
-  const handleSelectCountry = async (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setCountry(e.target.value);
-    await queryClient.invalidateQueries({
-      queryKey: ['distilleries'],
-    });
-  };
 
   const handleMutateCountry = async (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     mutate({ country: e.target.value });
   };
-
-  console.log(data);
 
   if (isPending) {
     return <span>loading..</span>;
@@ -74,6 +46,20 @@ function Distilleries() {
     return <span>error</span>;
   }
 
+  return (
+    <DistilleriesView data={data} handleMutateCountry={handleMutateCountry} />
+  );
+}
+
+type TDistilleriesViewProps = {
+  data: TDistillery[];
+  handleMutateCountry: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+};
+
+function DistilleriesView({
+  data,
+  handleMutateCountry,
+}: TDistilleriesViewProps) {
   return (
     <div>
       <div></div>
@@ -102,12 +88,9 @@ function Distilleries() {
           {data.map(({ id, name, country, founded, region, website }) => (
             <tr key={id}>
               <td>
-                {/* <Link
-                  to='/distilleries/$distilleryId'
-                  params={{ distilleryId: id.toString() }}
-                > */}
-                {name}
-                {/* </Link> */}
+                <Link to='/distilleries/$id' params={{ id: id.toString() }}>
+                  {name}
+                </Link>
               </td>
               <td>{country}</td>
               <td>{founded}</td>
